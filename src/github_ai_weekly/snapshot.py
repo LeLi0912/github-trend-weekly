@@ -8,7 +8,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from .config import SEED_FILE, SNAPSHOT_DIR, TOPIC_QUERIES, category_from_topics
+from .config import DISCOVER_TOP_N, SEED_FILE, SNAPSHOT_DIR, TOPICS, category_from_topics
 from .github_api import GitHubClient
 
 log = logging.getLogger(__name__)
@@ -22,16 +22,16 @@ def load_seed(path: Path = SEED_FILE) -> list[dict[str, str]]:
 
 def discover_repos(
     client: GitHubClient,
-    per_group: int = 80,
+    per_topic: int = DISCOVER_TOP_N,
 ) -> dict[str, dict[str, Any]]:
-    """按 topic 分组搜索发现仓库；单个分组失败不阻塞整体。"""
+    """按 topic 逐个搜索发现仓库（Search API 的 OR 不支持 qualifier）；单个 topic 失败不阻塞整体。"""
     merged: dict[str, dict[str, Any]] = {}
-    for _group, topics in TOPIC_QUERIES.items():
-        query = " OR ".join(f"topic:{t}" for t in topics) + " stars:>1000"
+    for topic in TOPICS:
+        query = f"topic:{topic} stars:>1000"
         try:
-            items = client.search_repos(query, per_page=100, max_results=per_group)
+            items = client.search_repos(query, per_page=100, max_results=per_topic)
         except Exception as exc:  # noqa: BLE001 - 单组失败继续
-            log.warning("topic 发现查询失败 (%s)：%s", _group, exc)
+            log.warning("topic 发现查询失败 (%s)：%s", topic, exc)
             continue
         for item in items:
             full_name = item.get("full_name", "")

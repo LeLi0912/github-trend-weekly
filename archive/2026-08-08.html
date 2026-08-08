@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GitHub AI 周榜 · 2026-08-08</title>
+<meta name="description" content="GitHub 上 AI 相关开源库的每周排名：周增量主榜、新面孔、分类子榜与趋势。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- 设计令牌（亮/暗两套，暗色为默认） ---------- */
+:root {
+  --bg: #FFFFFF;
+  --surface: #F8FAFC;
+  --surface-2: #F1F5F9;
+  --text: #0F172A;
+  --text-2: #475569;
+  --border: #CBD5E1;
+  --accent: #16A34A;
+  --accent-soft: rgba(22, 163, 74, 0.12);
+  --destructive: #DC2626;
+  --focus: #15803D;
+  --shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  color-scheme: light dark;
+}
+[data-theme="dark"] {
+  --bg: #0F172A;
+  --surface: #1E293B;
+  --surface-2: #272F42;
+  --text: #F8FAFC;
+  --text-2: #94A3B8;
+  --border: #475569;
+  --accent: #22C55E;
+  --accent-soft: rgba(34, 197, 94, 0.14);
+  --destructive: #EF4444;
+  --focus: #4ADE80;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Fira Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.mono, .num, code, .rank {
+  font-family: "Fira Code", "SFMono-Regular", Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--surface);
+  color: var(--text);
+  padding: 8px 16px;
+  z-index: 100;
+  border-radius: 0 0 8px 0;
+}
+.skip-link:focus { left: 0; }
+
+/* ---------- 头部 ---------- */
+.site-header {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand svg { flex: none; color: var(--text); }
+.brand h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+.subtitle {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.theme-toggle {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease;
+}
+.theme-toggle:hover { border-color: var(--accent); }
+[data-theme="dark"] .icon-sun { display: block; }
+[data-theme="dark"] .icon-moon { display: none; }
+.icon-sun { display: none; }
+.icon-moon { display: block; }
+
+/* ---------- 布局 ---------- */
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+section { margin-top: 40px; }
+h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  border-left: 4px solid var(--accent);
+  padding-left: 10px;
+}
+h3 { font-size: 17px; font-weight: 600; margin: 28px 0 10px; }
+.section-note { margin: 0 0 16px; color: var(--text-2); font-size: 14px; }
+
+/* ---------- 摘要卡片 ---------- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 24px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+.stat-value {
+  font-family: "Fira Code", monospace;
+  font-size: 26px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+.stat-label { font-size: 13px; color: var(--text-2); margin-top: 2px; }
+
+/* ---------- 表格 ---------- */
+.table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  min-width: 760px;
+}
+th, td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+th {
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--text-2);
+  background: var(--surface-2);
+  position: sticky;
+  top: 73px;
+  z-index: 1;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--surface-2); }
+td.num { text-align: right; white-space: nowrap; }
+th.num { text-align: right; }
+.rank { color: var(--text-2); font-weight: 600; }
+.repo-desc {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--text-2);
+  max-width: 420px;
+}
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.gain { min-width: 120px; }
+.gain-value { font-weight: 600; color: var(--accent); }
+.bar {
+  display: block;
+  height: 6px;
+  margin-top: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+  min-width: 2px;
+}
+.is-new .tag { color: var(--accent); border-color: var(--accent); }
+
+/* ---------- 趋势图 ---------- */
+.chart-figure { margin: 0; }
+.chart-figure svg {
+  width: 100%;
+  height: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.chart-figure text { fill: var(--text-2); font-size: 12px; }
+.grid-line { stroke: var(--border); stroke-width: 1; }
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.legend-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-right: 6px;
+}
+details {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 12px 16px;
+}
+summary { cursor: pointer; font-size: 14px; }
+
+/* ---------- 点评与方法 ---------- */
+#commentary ul { padding-left: 22px; }
+#commentary li { margin: 6px 0; }
+.note { color: var(--text-2); font-size: 13px; }
+.method-list { padding-left: 22px; color: var(--text-2); font-size: 14px; }
+.method-list li { margin: 6px 0; }
+
+footer {
+  border-top: 1px solid var(--border);
+  padding: 20px;
+  text-align: center;
+  color: var(--text-2);
+  font-size: 13px;
+}
+
+/* ---------- 响应式 ---------- */
+@media (min-width: 768px) {
+  .stats-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 767px) {
+  .brand h1 { font-size: 17px; }
+  main { padding: 16px 14px 40px; }
+  th { top: 61px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到主要内容</a>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/>
+      </svg>
+      <div>
+        <h1>GitHub AI 周榜</h1>
+        <p class="subtitle">数据截至 2026-08-08 · 每周更新 · 快照差值口径</p>
+      </div>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换亮色 / 暗色主题" title="切换主题">
+      <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+      </svg>
+      <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+  <section class="stats-grid" aria-label="本周摘要">
+    <div class="stat-card">
+      <div class="stat-value">656</div>
+      <div class="stat-label">上榜仓库</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">17,689,138</div>
+      <div class="stat-label">总星标</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">—</div>
+      <div class="stat-label">本周新增</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">656</div>
+      <div class="stat-label">新上榜</div>
+    </div>
+  </section>
+
+  <section id="main-ranking" aria-labelledby="main-ranking-title">
+    <h2 id="main-ranking-title">本周主榜 Top 30</h2>
+    <p class="section-note">首次运行：暂按总星标排序，暂无周增量数据。</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">仓库</th>
+            <th scope="col">分类</th>
+            <th scope="col">语言</th>
+            <th scope="col" class="num">总星标</th>
+            <th scope="col" class="num">本周新增</th>
+            <th scope="col" class="num">日均估算</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="is-new">
+            <td class="rank">1</td>
+            <td>
+              <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer">openclaw/openclaw</a>
+<div class="repo-desc">Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞 </div>            </td>
+            <td><span class="tag">未分类</span></td>
+            <td>TypeScript</td>
+            <td class="num">385,517</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">2</td>
+            <td>
+              <a href="https://github.com/obra/superpowers" target="_blank" rel="noopener noreferrer">obra/superpowers</a>
+<div class="repo-desc">An agentic skills framework &amp; software development methodology that works.</div>            </td>
+            <td><span class="tag">未分类</span></td>
+            <td>Shell</td>
+            <td class="num">268,888</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">3</td>
+            <td>
+              <a href="https://github.com/affaan-m/ECC" target="_blank" rel="noopener noreferrer">affaan-m/ECC</a>
+<div class="repo-desc">The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.</div>            </td>
+            <td><span class="tag">LLM 框架</span></td>
+            <td>JavaScript</td>
+            <td class="num">238,637</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">4</td>
+            <td>
+              <a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener noreferrer">NousResearch/hermes-agent</a>
+<div class="repo-desc">The agent that grows with you</div>            </td>
+            <td><span class="tag">Agent 框架</span></td>
+            <td>Python</td>
+            <td class="num">227,176</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">5</td>
+            <td>
+              <a href="https://github.com/n8n-io/n8n" target="_blank" rel="noopener noreferrer">n8n-io/n8n</a>
+<div class="repo-desc">Fair-code workflow automation platform with native AI capabilities. Combine visual building with custom code, self-host or cloud, 400+ integrations.</div>            </td>
+            <td><span class="tag">未分类</span></td>
+            <td>TypeScript</td>
+            <td class="num">199,771</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">6</td>
+            <td>
+              <a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="noopener noreferrer">tensorflow/tensorflow</a>
+<div class="repo-desc">An Open Source Machine Learning Framework for Everyone</div>            </td>
+            <td><span class="tag">训练与微调</span></td>
+            <td>C++</td>
+            <td class="num">196,919</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">7</td>
+            <td>
+              <a href="https://github.com/Significant-Gravitas/AutoGPT" target="_blank" rel="noopener noreferrer">Significant-Gravitas/AutoGPT</a>
+<div class="repo-desc">AutoGPT is the vision of accessible AI for everyone, to use and to build on. Our mission is to provide the tools, so that you can focus on what matters.</div>            </td>
+            <td><span class="tag">Agent 框架</span></td>
+            <td>Python</td>
+            <td class="num">186,380</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">8</td>
+            <td>
+              <a href="https://github.com/ollama/ollama" target="_blank" rel="noopener noreferrer">ollama/ollama</a>
+<div class="repo-desc">Get up and running with Kimi-K2.6, GLM-5.2, MiniMax, DeepSeek, gpt-oss, Qwen, Gemma and other models.</div>            </td>
+            <td><span class="tag">推理与部署</span></td>
+            <td>Go</td>
+            <td class="num">178,033</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">9</td>
+            <td>
+              <a href="https://github.com/microsoft/markitdown" target="_blank" rel="noopener noreferrer">microsoft/markitdown</a>
+<div class="repo-desc">Python tool for converting files and office documents to Markdown.</div>            </td>
+            <td><span class="tag">LLM 框架</span></td>
+            <td>Python</td>
+            <td class="num">172,270</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">10</td>
+            <td>
+              <a href="https://github.com/f/prompts.chat" target="_blank" rel="noopener noreferrer">f/prompts.chat</a>
+<div class="repo-desc">f.k.a. Awesome ChatGPT Prompts. Share, discover, and collect prompts from the community. Free and open source — self-host for your organization with complete privacy.</div>            </td>
+            <td><span class="tag">LLM 框架</span></td>
+            <td>HTML</td>
+            <td class="num">166,872</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">11</td>
+            <td>
+              <a href="https://github.com/AUTOMATIC1111/stable-diffusion-webui" target="_blank" rel="noopener noreferrer">AUTOMATIC1111/stable-diffusion-webui</a>
+<div class="repo-desc">Stable Diffusion web UI</div>            </td>
+            <td><span class="tag">多模态与生成</span></td>
+            <td>Python</td>
+            <td class="num">164,439</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">12</td>
+            <td>
+              <a href="https://github.com/huggingface/transformers" target="_blank" rel="noopener noreferrer">huggingface/transformers</a>
+<div class="repo-desc">🤗 Transformers: the model-definition framework for state-of-the-art machine learning models in text, vision, audio, and multimodal models, for both inference and training. </div>            </td>
+            <td><span class="tag">LLM 框架</span></td>
+            <td>Python</td>
+            <td class="num">163,462</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">13</td>
+            <td>
+              <a href="https://github.com/firecrawl/firecrawl" target="_blank" rel="noopener noreferrer">firecrawl/firecrawl</a>
+<div class="repo-desc">The context API to search, scrape, and interact with the web at scale. 🔥</div>            </td>
+            <td><span class="tag">LLM 框架</span></td>
+            <td>TypeScript</td>
+            <td class="num">163,008</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">14</td>
+            <td>
+              <a href="https://github.com/Snailclimb/JavaGuide" target="_blank" rel="noopener noreferrer">Snailclimb/JavaGuide</a>
+<div class="repo-desc">Java 面试 &amp; 后端通用面试指南，覆盖计算机基础、数据库、分布式、高并发、系统设计与 AI 应用开发</div>            </td>
+            <td><span class="tag">未分类</span></td>
+            <td>JavaScript</td>
+            <td class="num">157,612</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">15</td>
+            <td>
+              <a href="https://github.com/langflow-ai/langflow" target="_blank" rel="noopener noreferrer">langflow-ai/langflow</a>
+<div class="repo-desc">Langflow is a powerful tool for building and deploying AI-powered agents and workflows.</div>            </td>
+            <td><span class="tag">Agent 框架</span></td>
+            <td>Python</td>
+            <td class="num">152,944</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">16</td>
+            <td>
+              <a href="https://github.com/langgenius/dify" target="_blank" rel="noopener noreferrer">langgenius/dify</a>
+<div class="repo-desc">Build Agentic workflows, RAG pipelines, with rich AI model and tool support on one collaborative workspace. Deploy on cloud, VPC, or self-hosted, so teams move from prototype to production without rebuilding the stack.</div>            </td>
+            <td><span class="tag">LLM 框架</span></td>
+            <td>TypeScript</td>
+            <td class="num">151,752</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">17</td>
+            <td>
+              <a href="https://github.com/open-webui/open-webui" target="_blank" rel="noopener noreferrer">open-webui/open-webui</a>
+<div class="repo-desc">User-friendly AI Interface (Supports Ollama, OpenAI API, ...)</div>            </td>
+            <td><span class="tag">推理与部署</span></td>
+            <td>Python</td>
+            <td class="num">148,195</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">18</td>
+            <td>
+              <a href="https://github.com/langchain-ai/langchain" target="_blank" rel="noopener noreferrer">langchain-ai/langchain</a>
+<div class="repo-desc">The agent engineering platform.</div>            </td>
+            <td><span class="tag">LLM 框架</span></td>
+            <td>Python</td>
+            <td class="num">143,670</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">19</td>
+            <td>
+              <a href="https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools" target="_blank" rel="noopener noreferrer">x1xhlol/system-prompts-and-models-of-ai-tools</a>
+<div class="repo-desc">FULL Augment Code, Claude Code, Cluely, CodeBuddy, Comet, Cursor, Devin AI, Junie, Kiro, Leap.new, Lovable, Manus, NotionAI, Orchids.app, Perplexity, Poke, Qoder, Replit, Same.dev, Trae, Traycer AI, VSCode Agent, Warp.dev, Windsurf, Xcode, Z.ai Code, Dia &amp; v0. (And other Open Sourced) System Prompts, Internal Tools &amp; AI Models</div>            </td>
+            <td><span class="tag">未分类</span></td>
+            <td>—</td>
+            <td class="num">142,655</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">20</td>
+            <td>
+              <a href="https://github.com/Shubhamsaboo/awesome-llm-apps" target="_blank" rel="noopener noreferrer">Shubhamsaboo/awesome-llm-apps</a>
+<div class="repo-desc">100+ AI Agents, Agent Skills and RAG Apps - Free and Open Source.</div>            </td>
+            <td><span class="tag">Agent 框架</span></td>
+            <td>Python</td>
+            <td class="num">131,385</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">21</td>
+            <td>
+              <a href="https://github.com/github/spec-kit" target="_blank" rel="noopener noreferrer">github/spec-kit</a>
+<div class="repo-desc">💫 Toolkit to help you get started with Spec-Driven Development</div>            </td>
+            <td><span class="tag">未分类</span></td>
+            <td>Python</td>
+            <td class="num">125,809</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">22</td>
+            <td>
+              <a href="https://github.com/Comfy-Org/ComfyUI" target="_blank" rel="noopener noreferrer">comfyanonymous/ComfyUI</a>
+<div class="repo-desc">The most powerful and modular diffusion model GUI, api and backend with a graph/nodes interface.</div>            </td>
+            <td><span class="tag">多模态与生成</span></td>
+            <td>Python</td>
+            <td class="num">124,711</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">23</td>
+            <td>
+              <a href="https://github.com/Comfy-Org/ComfyUI" target="_blank" rel="noopener noreferrer">Comfy-Org/ComfyUI</a>
+<div class="repo-desc">The most powerful and modular diffusion model GUI, api and backend with a graph/nodes interface.</div>            </td>
+            <td><span class="tag">未分类</span></td>
+            <td>Python</td>
+            <td class="num">124,710</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">24</td>
+            <td>
+              <a href="https://github.com/ggml-org/llama.cpp" target="_blank" rel="noopener noreferrer">ggml-org/llama.cpp</a>
+<div class="repo-desc">LLM inference in C/C++</div>            </td>
+            <td><span class="tag">推理与部署</span></td>
+            <td>C++</td>
+            <td class="num">123,046</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">25</td>
+            <td>
+              <a href="https://github.com/microsoft/generative-ai-for-beginners" target="_blank" rel="noopener noreferrer">microsoft/generative-ai-for-beginners</a>
+<div class="repo-desc">21 Lessons, Get Started Building with Generative AI </div>            </td>
+            <td><span class="tag">未分类</span></td>
+            <td>Jupyter Notebook</td>
+            <td class="num">116,971</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">26</td>
+            <td>
+              <a href="https://github.com/browser-use/browser-use" target="_blank" rel="noopener noreferrer">browser-use/browser-use</a>
+<div class="repo-desc">🌐 Make websites accessible for AI agents. Automate tasks online with ease.</div>            </td>
+            <td><span class="tag">Agent 框架</span></td>
+            <td>Python</td>
+            <td class="num">108,229</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">27</td>
+            <td>
+              <a href="https://github.com/supabase/supabase" target="_blank" rel="noopener noreferrer">supabase/supabase</a>
+<div class="repo-desc">The Postgres development platform. Supabase gives you a dedicated Postgres database to build your web, mobile, and AI applications.</div>            </td>
+            <td><span class="tag">向量数据库</span></td>
+            <td>TypeScript</td>
+            <td class="num">107,683</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">28</td>
+            <td>
+              <a href="https://github.com/openai/whisper" target="_blank" rel="noopener noreferrer">openai/whisper</a>
+<div class="repo-desc">Robust Speech Recognition via Large-Scale Weak Supervision</div>            </td>
+            <td><span class="tag">多模态与生成</span></td>
+            <td>Python</td>
+            <td class="num">106,885</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">29</td>
+            <td>
+              <a href="https://github.com/google-gemini/gemini-cli" target="_blank" rel="noopener noreferrer">google-gemini/gemini-cli</a>
+<div class="repo-desc">An open-source AI agent that brings the power of Gemini directly into your terminal.</div>            </td>
+            <td><span class="tag">未分类</span></td>
+            <td>TypeScript</td>
+            <td class="num">106,418</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+          <tr class="is-new">
+            <td class="rank">30</td>
+            <td>
+              <a href="https://github.com/Graphify-Labs/graphify" target="_blank" rel="noopener noreferrer">Graphify-Labs/graphify</a>
+<div class="repo-desc">Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store.</div>            </td>
+            <td><span class="tag">LLM 框架</span></td>
+            <td>Python</td>
+            <td class="num">104,099</td>
+            <td class="num gain">
+—            </td>
+            <td class="num">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="new-faces" aria-labelledby="new-faces-title">
+    <h2 id="new-faces-title">新面孔（本周新上榜）</h2>
+    <p class="section-note">上一期未进入榜单、本期首次上榜的仓库，按总星标排序。</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">仓库</th>
+            <th scope="col">分类</th>
+            <th scope="col">语言</th>
+            <th scope="col" class="num">总星标</th>
+            <th scope="col" class="num">本周新增</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rank">1</td>
+            <td>
+              <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer">openclaw/openclaw</a>
+<div class="repo-desc">Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞 </div>            </td>
+            <td><span class="tag">未分类</span></td>
+            <td>TypeScript</td>
+            <td class="num">385,517</td>
+            <td class="num gain">
+—            </td>
+          </tr>
+          <tr>
+            <td class="rank">2</td>
+            <td>
+              <a href="https://github.com/obra/superpowers" target="_blank" rel="noopener noreferrer">obra/superpowers</a>
+<div class="repo-desc">An agentic skills framework &amp; software development methodology that works.</div>            </td>
+            <td><span class="tag">未分类</span></td>
+            <td>Shell</td>
+            <td class="num">268,888</td>
+            <td class="num gain">
+—            </td>
+          </tr>
+          <tr>
+            <td class="rank">3</td>
+            <td>
+              <a href="https://github.com/affaan-m/ECC" target="_blank" rel="noopener noreferrer">affaan-m/ECC</a>
+<div class="repo-desc">The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.</div>            </td>
+            <td><span class="tag">LLM 框架</span></td>
+            <td>JavaScript</td>
+            <td class="num">238,637</td>
+            <td class="num gain">
+—            </td>
+          </tr>
+          <tr>
+            <td class="rank">4</td>
+            <td>
+              <a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener noreferrer">NousResearch/hermes-agent</a>
+<div class="repo-desc">The agent that grows with you</div>            </td>
+            <td><span class="tag">Agent 框架</span></td>
+            <td>Python</td>
+            <td class="num">227,176</td>
+            <td class="num gain">
+—            </td>
+          </tr>
+          <tr>
+            <td class="rank">5</td>
+            <td>
+              <a href="https://github.com/n8n-io/n8n" target="_blank" rel="noopener noreferrer">n8n-io/n8n</a>
+<div class="repo-desc">Fair-code workflow automation platform with native AI capabilities. Combine visual building with custom code, self-host or cloud, 400+ integrations.</div>            </td>
+            <td><span class="tag">未分类</span></td>
+            <td>TypeScript</td>
+            <td class="num">199,771</td>
+            <td class="num gain">
+—            </td>
+          </tr>
+          <tr>
+            <td class="rank">6</td>
+            <td>
+              <a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="noopener noreferrer">tensorflow/tensorflow</a>
+<div class="repo-desc">An Open Source Machine Learning Framework for Everyone</div>            </td>
+            <td><span class="tag">训练与微调</span></td>
+            <td>C++</td>
+            <td class="num">196,919</td>
+            <td class="num gain">
+—            </td>
+          </tr>
+          <tr>
+            <td class="rank">7</td>
+            <td>
+              <a href="https://github.com/Significant-Gravitas/AutoGPT" target="_blank" rel="noopener noreferrer">Significant-Gravitas/AutoGPT</a>
+<div class="repo-desc">AutoGPT is the vision of accessible AI for everyone, to use and to build on. Our mission is to provide the tools, so that you can focus on what matters.</div>            </td>
+            <td><span class="tag">Agent 框架</span></td>
+            <td>Python</td>
+            <td class="num">186,380</td>
+            <td class="num gain">
+—            </td>
+          </tr>
+          <tr>
+            <td class="rank">8</td>
+            <td>
+              <a href="https://github.com/ollama/ollama" target="_blank" rel="noopener noreferrer">ollama/ollama</a>
+<div class="repo-desc">Get up and running with Kimi-K2.6, GLM-5.2, MiniMax, DeepSeek, gpt-oss, Qwen, Gemma and other models.</div>            </td>
+            <td><span class="tag">推理与部署</span></td>
+            <td>Go</td>
+            <td class="num">178,033</td>
+            <td class="num gain">
+—            </td>
+          </tr>
+          <tr>
+            <td class="rank">9</td>
+            <td>
+              <a href="https://github.com/microsoft/markitdown" target="_blank" rel="noopener noreferrer">microsoft/markitdown</a>
+<div class="repo-desc">Python tool for converting files and office documents to Markdown.</div>            </td>
+            <td><span class="tag">LLM 框架</span></td>
+            <td>Python</td>
+            <td class="num">172,270</td>
+            <td class="num gain">
+—            </td>
+          </tr>
+          <tr>
+            <td class="rank">10</td>
+            <td>
+              <a href="https://github.com/f/prompts.chat" target="_blank" rel="noopener noreferrer">f/prompts.chat</a>
+<div class="repo-desc">f.k.a. Awesome ChatGPT Prompts. Share, discover, and collect prompts from the community. Free and open source — self-host for your organization with complete privacy.</div>            </td>
+            <td><span class="tag">LLM 框架</span></td>
+            <td>HTML</td>
+            <td class="num">166,872</td>
+            <td class="num gain">
+—            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="categories" aria-labelledby="categories-title">
+    <h2 id="categories-title">分类子榜</h2>
+    <h3>LLM 框架 Top 10</h3>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">仓库</th>
+            <th scope="col">语言</th>
+            <th scope="col" class="num">总星标</th>
+            <th scope="col" class="num">本周新增</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rank">1</td>
+            <td><a href="https://github.com/affaan-m/ECC" target="_blank" rel="noopener noreferrer">affaan-m/ECC</a></td>
+            <td>JavaScript</td>
+            <td class="num">238,637</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">2</td>
+            <td><a href="https://github.com/microsoft/markitdown" target="_blank" rel="noopener noreferrer">microsoft/markitdown</a></td>
+            <td>Python</td>
+            <td class="num">172,270</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">3</td>
+            <td><a href="https://github.com/f/prompts.chat" target="_blank" rel="noopener noreferrer">f/prompts.chat</a></td>
+            <td>HTML</td>
+            <td class="num">166,872</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">4</td>
+            <td><a href="https://github.com/huggingface/transformers" target="_blank" rel="noopener noreferrer">huggingface/transformers</a></td>
+            <td>Python</td>
+            <td class="num">163,462</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">5</td>
+            <td><a href="https://github.com/firecrawl/firecrawl" target="_blank" rel="noopener noreferrer">firecrawl/firecrawl</a></td>
+            <td>TypeScript</td>
+            <td class="num">163,008</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">6</td>
+            <td><a href="https://github.com/langgenius/dify" target="_blank" rel="noopener noreferrer">langgenius/dify</a></td>
+            <td>TypeScript</td>
+            <td class="num">151,752</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">7</td>
+            <td><a href="https://github.com/langchain-ai/langchain" target="_blank" rel="noopener noreferrer">langchain-ai/langchain</a></td>
+            <td>Python</td>
+            <td class="num">143,670</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">8</td>
+            <td><a href="https://github.com/Graphify-Labs/graphify" target="_blank" rel="noopener noreferrer">Graphify-Labs/graphify</a></td>
+            <td>Python</td>
+            <td class="num">104,099</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">9</td>
+            <td><a href="https://github.com/harry0703/MoneyPrinterTurbo" target="_blank" rel="noopener noreferrer">harry0703/MoneyPrinterTurbo</a></td>
+            <td>Python</td>
+            <td class="num">102,142</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">10</td>
+            <td><a href="https://github.com/rasbt/LLMs-from-scratch" target="_blank" rel="noopener noreferrer">rasbt/LLMs-from-scratch</a></td>
+            <td>Jupyter Notebook</td>
+            <td class="num">101,051</td>
+            <td class="num">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>Agent 框架 Top 10</h3>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">仓库</th>
+            <th scope="col">语言</th>
+            <th scope="col" class="num">总星标</th>
+            <th scope="col" class="num">本周新增</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rank">1</td>
+            <td><a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener noreferrer">NousResearch/hermes-agent</a></td>
+            <td>Python</td>
+            <td class="num">227,176</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">2</td>
+            <td><a href="https://github.com/Significant-Gravitas/AutoGPT" target="_blank" rel="noopener noreferrer">Significant-Gravitas/AutoGPT</a></td>
+            <td>Python</td>
+            <td class="num">186,380</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">3</td>
+            <td><a href="https://github.com/langflow-ai/langflow" target="_blank" rel="noopener noreferrer">langflow-ai/langflow</a></td>
+            <td>Python</td>
+            <td class="num">152,944</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">4</td>
+            <td><a href="https://github.com/Shubhamsaboo/awesome-llm-apps" target="_blank" rel="noopener noreferrer">Shubhamsaboo/awesome-llm-apps</a></td>
+            <td>Python</td>
+            <td class="num">131,385</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">5</td>
+            <td><a href="https://github.com/browser-use/browser-use" target="_blank" rel="noopener noreferrer">browser-use/browser-use</a></td>
+            <td>Python</td>
+            <td class="num">108,229</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">6</td>
+            <td><a href="https://github.com/dair-ai/Prompt-Engineering-Guide" target="_blank" rel="noopener noreferrer">dair-ai/Prompt-Engineering-Guide</a></td>
+            <td>MDX</td>
+            <td class="num">77,343</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">7</td>
+            <td><a href="https://github.com/shareAI-lab/learn-claude-code" target="_blank" rel="noopener noreferrer">shareAI-lab/learn-claude-code</a></td>
+            <td>Python</td>
+            <td class="num">73,534</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">8</td>
+            <td><a href="https://github.com/thedaviddias/Front-End-Checklist" target="_blank" rel="noopener noreferrer">thedaviddias/Front-End-Checklist</a></td>
+            <td>MDX</td>
+            <td class="num">73,461</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">9</td>
+            <td><a href="https://github.com/FoundationAgents/MetaGPT" target="_blank" rel="noopener noreferrer">geekan/MetaGPT</a></td>
+            <td>Python</td>
+            <td class="num">69,706</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">10</td>
+            <td><a href="https://github.com/Panniantong/Agent-Reach" target="_blank" rel="noopener noreferrer">Panniantong/Agent-Reach</a></td>
+            <td>Python</td>
+            <td class="num">68,452</td>
+            <td class="num">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>RAG 与检索 Top 10</h3>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">仓库</th>
+            <th scope="col">语言</th>
+            <th scope="col" class="num">总星标</th>
+            <th scope="col" class="num">本周新增</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rank">1</td>
+            <td><a href="https://github.com/PaddlePaddle/PaddleOCR" target="_blank" rel="noopener noreferrer">PaddlePaddle/PaddleOCR</a></td>
+            <td>Python</td>
+            <td class="num">87,238</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">2</td>
+            <td><a href="https://github.com/infiniflow/ragflow" target="_blank" rel="noopener noreferrer">infiniflow/ragflow</a></td>
+            <td>Go</td>
+            <td class="num">87,064</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">3</td>
+            <td><a href="https://github.com/zylon-ai/private-gpt" target="_blank" rel="noopener noreferrer">zylon-ai/private-gpt</a></td>
+            <td>Python</td>
+            <td class="num">57,415</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">4</td>
+            <td><a href="https://github.com/khoj-ai/khoj" target="_blank" rel="noopener noreferrer">khoj-ai/khoj</a></td>
+            <td>Python</td>
+            <td class="num">36,387</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">5</td>
+            <td><a href="https://github.com/HKUDS/DeepTutor" target="_blank" rel="noopener noreferrer">HKUDS/DeepTutor</a></td>
+            <td>Python</td>
+            <td class="num">33,052</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">6</td>
+            <td><a href="https://github.com/stanford-oval/storm" target="_blank" rel="noopener noreferrer">stanford-oval/storm</a></td>
+            <td>Python</td>
+            <td class="num">30,824</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">7</td>
+            <td><a href="https://github.com/typesense/typesense" target="_blank" rel="noopener noreferrer">typesense/typesense</a></td>
+            <td>C++</td>
+            <td class="num">26,409</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">8</td>
+            <td><a href="https://github.com/HKUDS/RAG-Anything" target="_blank" rel="noopener noreferrer">HKUDS/RAG-Anything</a></td>
+            <td>Python</td>
+            <td class="num">22,816</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">9</td>
+            <td><a href="https://github.com/jina-ai/serve" target="_blank" rel="noopener noreferrer">jina-ai/jina</a></td>
+            <td>Python</td>
+            <td class="num">21,864</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">10</td>
+            <td><a href="https://github.com/coze-dev/coze-studio" target="_blank" rel="noopener noreferrer">coze-dev/coze-studio</a></td>
+            <td>TypeScript</td>
+            <td class="num">21,403</td>
+            <td class="num">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>向量数据库 Top 10</h3>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">仓库</th>
+            <th scope="col">语言</th>
+            <th scope="col" class="num">总星标</th>
+            <th scope="col" class="num">本周新增</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rank">1</td>
+            <td><a href="https://github.com/supabase/supabase" target="_blank" rel="noopener noreferrer">supabase/supabase</a></td>
+            <td>TypeScript</td>
+            <td class="num">107,683</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">2</td>
+            <td><a href="https://github.com/thedotmack/claude-mem" target="_blank" rel="noopener noreferrer">thedotmack/claude-mem</a></td>
+            <td>JavaScript</td>
+            <td class="num">90,019</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">3</td>
+            <td><a href="https://github.com/redis/redis" target="_blank" rel="noopener noreferrer">redis/redis</a></td>
+            <td>C</td>
+            <td class="num">75,928</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">4</td>
+            <td><a href="https://github.com/meilisearch/meilisearch" target="_blank" rel="noopener noreferrer">meilisearch/meilisearch</a></td>
+            <td>Rust</td>
+            <td class="num">58,905</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">5</td>
+            <td><a href="https://github.com/milvus-io/milvus" target="_blank" rel="noopener noreferrer">milvus-io/milvus</a></td>
+            <td>Go</td>
+            <td class="num">45,557</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">6</td>
+            <td><a href="https://github.com/facebookresearch/faiss" target="_blank" rel="noopener noreferrer">facebookresearch/faiss</a></td>
+            <td>C++</td>
+            <td class="num">40,692</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">7</td>
+            <td><a href="https://github.com/qdrant/qdrant" target="_blank" rel="noopener noreferrer">qdrant/qdrant</a></td>
+            <td>Rust</td>
+            <td class="num">33,839</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">8</td>
+            <td><a href="https://github.com/dragonflydb/dragonfly" target="_blank" rel="noopener noreferrer">dragonflydb/dragonfly</a></td>
+            <td>C++</td>
+            <td class="num">30,976</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">9</td>
+            <td><a href="https://github.com/topoteretes/cognee" target="_blank" rel="noopener noreferrer">topoteretes/cognee</a></td>
+            <td>Python</td>
+            <td class="num">29,852</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">10</td>
+            <td><a href="https://github.com/NirDiamant/RAG_Techniques" target="_blank" rel="noopener noreferrer">NirDiamant/RAG_Techniques</a></td>
+            <td>Jupyter Notebook</td>
+            <td class="num">28,982</td>
+            <td class="num">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>推理与部署 Top 10</h3>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">仓库</th>
+            <th scope="col">语言</th>
+            <th scope="col" class="num">总星标</th>
+            <th scope="col" class="num">本周新增</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rank">1</td>
+            <td><a href="https://github.com/ollama/ollama" target="_blank" rel="noopener noreferrer">ollama/ollama</a></td>
+            <td>Go</td>
+            <td class="num">178,033</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">2</td>
+            <td><a href="https://github.com/open-webui/open-webui" target="_blank" rel="noopener noreferrer">open-webui/open-webui</a></td>
+            <td>Python</td>
+            <td class="num">148,195</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">3</td>
+            <td><a href="https://github.com/ggml-org/llama.cpp" target="_blank" rel="noopener noreferrer">ggml-org/llama.cpp</a></td>
+            <td>C++</td>
+            <td class="num">123,046</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">4</td>
+            <td><a href="https://github.com/vllm-project/vllm" target="_blank" rel="noopener noreferrer">vllm-project/vllm</a></td>
+            <td>Python</td>
+            <td class="num">88,489</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">5</td>
+            <td><a href="https://github.com/nomic-ai/gpt4all" target="_blank" rel="noopener noreferrer">nomic-ai/gpt4all</a></td>
+            <td>C++</td>
+            <td class="num">77,411</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">6</td>
+            <td><a href="https://github.com/mudler/LocalAI" target="_blank" rel="noopener noreferrer">mudler/LocalAI</a></td>
+            <td>Go</td>
+            <td class="num">48,317</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">7</td>
+            <td><a href="https://github.com/sgl-project/sglang" target="_blank" rel="noopener noreferrer">sgl-project/sglang</a></td>
+            <td>Python</td>
+            <td class="num">31,518</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">8</td>
+            <td><a href="https://github.com/mlc-ai/mlc-llm" target="_blank" rel="noopener noreferrer">mlc-ai/mlc-llm</a></td>
+            <td>Python</td>
+            <td class="num">23,042</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">9</td>
+            <td><a href="https://github.com/microsoft/onnxruntime" target="_blank" rel="noopener noreferrer">microsoft/onnxruntime</a></td>
+            <td>C++</td>
+            <td class="num">21,300</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">10</td>
+            <td><a href="https://github.com/huggingface/candle" target="_blank" rel="noopener noreferrer">huggingface/candle</a></td>
+            <td>Rust</td>
+            <td class="num">20,868</td>
+            <td class="num">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>训练与微调 Top 10</h3>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">仓库</th>
+            <th scope="col">语言</th>
+            <th scope="col" class="num">总星标</th>
+            <th scope="col" class="num">本周新增</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rank">1</td>
+            <td><a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="noopener noreferrer">tensorflow/tensorflow</a></td>
+            <td>C++</td>
+            <td class="num">196,919</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">2</td>
+            <td><a href="https://github.com/pytorch/pytorch" target="_blank" rel="noopener noreferrer">pytorch/pytorch</a></td>
+            <td>Python</td>
+            <td class="num">102,272</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">3</td>
+            <td><a href="https://github.com/hiyouga/LlamaFactory" target="_blank" rel="noopener noreferrer">hiyouga/LlamaFactory</a></td>
+            <td>Python</td>
+            <td class="num">73,910</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">4</td>
+            <td><a href="https://github.com/unslothai/unsloth" target="_blank" rel="noopener noreferrer">unslothai/unsloth</a></td>
+            <td>Python</td>
+            <td class="num">69,700</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">5</td>
+            <td><a href="https://github.com/keras-team/keras" target="_blank" rel="noopener noreferrer">keras-team/keras</a></td>
+            <td>Python</td>
+            <td class="num">64,222</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">6</td>
+            <td><a href="https://github.com/GokuMohandas/Made-With-ML" target="_blank" rel="noopener noreferrer">GokuMohandas/Made-With-ML</a></td>
+            <td>Jupyter Notebook</td>
+            <td class="num">49,011</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">7</td>
+            <td><a href="https://github.com/deepspeedai/DeepSpeed" target="_blank" rel="noopener noreferrer">microsoft/DeepSpeed</a></td>
+            <td>Python</td>
+            <td class="num">42,884</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">8</td>
+            <td><a href="https://github.com/huggingface/pytorch-image-models" target="_blank" rel="noopener noreferrer">huggingface/pytorch-image-models</a></td>
+            <td>Python</td>
+            <td class="num">37,055</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">9</td>
+            <td><a href="https://github.com/jax-ml/jax" target="_blank" rel="noopener noreferrer">jax-ml/jax</a></td>
+            <td>Python</td>
+            <td class="num">36,118</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">10</td>
+            <td><a href="https://github.com/Lightning-AI/pytorch-lightning" target="_blank" rel="noopener noreferrer">lightning-ai/pytorch-lightning</a></td>
+            <td>Python</td>
+            <td class="num">31,276</td>
+            <td class="num">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>评测与安全 Top 10</h3>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">仓库</th>
+            <th scope="col">语言</th>
+            <th scope="col" class="num">总星标</th>
+            <th scope="col" class="num">本周新增</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rank">1</td>
+            <td><a href="https://github.com/promptfoo/promptfoo" target="_blank" rel="noopener noreferrer">promptfoo/promptfoo</a></td>
+            <td>TypeScript</td>
+            <td class="num">24,065</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">2</td>
+            <td><a href="https://github.com/openai/evals" target="_blank" rel="noopener noreferrer">openai/evals</a></td>
+            <td>Python</td>
+            <td class="num">19,130</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">3</td>
+            <td><a href="https://github.com/confident-ai/deepeval" target="_blank" rel="noopener noreferrer">confident-ai/deepeval</a></td>
+            <td>Python</td>
+            <td class="num">17,471</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">4</td>
+            <td><a href="https://github.com/vibrantlabsai/ragas" target="_blank" rel="noopener noreferrer">explodinggradients/ragas</a></td>
+            <td>Python</td>
+            <td class="num">15,177</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">5</td>
+            <td><a href="https://github.com/EleutherAI/lm-evaluation-harness" target="_blank" rel="noopener noreferrer">EleutherAI/lm-evaluation-harness</a></td>
+            <td>Python</td>
+            <td class="num">13,573</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">6</td>
+            <td><a href="https://github.com/NVIDIA/garak" target="_blank" rel="noopener noreferrer">NVIDIA/garak</a></td>
+            <td>Python</td>
+            <td class="num">8,731</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">7</td>
+            <td><a href="https://github.com/open-compass/opencompass" target="_blank" rel="noopener noreferrer">open-compass/opencompass</a></td>
+            <td>Python</td>
+            <td class="num">7,283</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">8</td>
+            <td><a href="https://github.com/ifixai-ai/iFixAi" target="_blank" rel="noopener noreferrer">ifixai-ai/iFixAi</a></td>
+            <td>Python</td>
+            <td class="num">6,900</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">9</td>
+            <td><a href="https://github.com/jeinlee1991/chinese-llm-benchmark" target="_blank" rel="noopener noreferrer">jeinlee1991/chinese-llm-benchmark</a></td>
+            <td>—</td>
+            <td class="num">6,356</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">10</td>
+            <td><a href="https://github.com/Giskard-AI/giskard-oss" target="_blank" rel="noopener noreferrer">Giskard-AI/giskard</a></td>
+            <td>Python</td>
+            <td class="num">5,741</td>
+            <td class="num">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>MLOps / LLMOps Top 10</h3>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">仓库</th>
+            <th scope="col">语言</th>
+            <th scope="col" class="num">总星标</th>
+            <th scope="col" class="num">本周新增</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rank">1</td>
+            <td><a href="https://github.com/netdata/netdata" target="_blank" rel="noopener noreferrer">netdata/netdata</a></td>
+            <td>Go</td>
+            <td class="num">80,076</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">2</td>
+            <td><a href="https://github.com/apache/airflow" target="_blank" rel="noopener noreferrer">apache/airflow</a></td>
+            <td>Python</td>
+            <td class="num">46,410</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">3</td>
+            <td><a href="https://github.com/ray-project/ray" target="_blank" rel="noopener noreferrer">ray-project/ray</a></td>
+            <td>Python</td>
+            <td class="num">43,469</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">4</td>
+            <td><a href="https://github.com/langfuse/langfuse" target="_blank" rel="noopener noreferrer">langfuse/langfuse</a></td>
+            <td>TypeScript</td>
+            <td class="num">32,719</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">5</td>
+            <td><a href="https://github.com/SigNoz/signoz" target="_blank" rel="noopener noreferrer">SigNoz/signoz</a></td>
+            <td>TypeScript</td>
+            <td class="num">31,791</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">6</td>
+            <td><a href="https://github.com/HumanSignal/label-studio" target="_blank" rel="noopener noreferrer">HumanSignal/label-studio</a></td>
+            <td>TypeScript</td>
+            <td class="num">28,011</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">7</td>
+            <td><a href="https://github.com/mlflow/mlflow" target="_blank" rel="noopener noreferrer">mlflow/mlflow</a></td>
+            <td>Python</td>
+            <td class="num">27,416</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">8</td>
+            <td><a href="https://github.com/apache/skywalking" target="_blank" rel="noopener noreferrer">apache/skywalking</a></td>
+            <td>Java</td>
+            <td class="num">24,915</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">9</td>
+            <td><a href="https://github.com/cilium/cilium" target="_blank" rel="noopener noreferrer">cilium/cilium</a></td>
+            <td>Go</td>
+            <td class="num">24,883</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">10</td>
+            <td><a href="https://github.com/PrefectHQ/prefect" target="_blank" rel="noopener noreferrer">PrefectHQ/prefect</a></td>
+            <td>Python</td>
+            <td class="num">23,573</td>
+            <td class="num">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>多模态与生成 Top 10</h3>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">仓库</th>
+            <th scope="col">语言</th>
+            <th scope="col" class="num">总星标</th>
+            <th scope="col" class="num">本周新增</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rank">1</td>
+            <td><a href="https://github.com/AUTOMATIC1111/stable-diffusion-webui" target="_blank" rel="noopener noreferrer">AUTOMATIC1111/stable-diffusion-webui</a></td>
+            <td>Python</td>
+            <td class="num">164,439</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">2</td>
+            <td><a href="https://github.com/Comfy-Org/ComfyUI" target="_blank" rel="noopener noreferrer">comfyanonymous/ComfyUI</a></td>
+            <td>Python</td>
+            <td class="num">124,711</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">3</td>
+            <td><a href="https://github.com/openai/whisper" target="_blank" rel="noopener noreferrer">openai/whisper</a></td>
+            <td>Python</td>
+            <td class="num">106,885</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">4</td>
+            <td><a href="https://github.com/facebookresearch/segment-anything" target="_blank" rel="noopener noreferrer">facebookresearch/segment-anything</a></td>
+            <td>Jupyter Notebook</td>
+            <td class="num">54,657</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">5</td>
+            <td><a href="https://github.com/ggml-org/whisper.cpp" target="_blank" rel="noopener noreferrer">ggml-org/whisper.cpp</a></td>
+            <td>C++</td>
+            <td class="num">52,679</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">6</td>
+            <td><a href="https://github.com/bytedance/UI-TARS-desktop" target="_blank" rel="noopener noreferrer">bytedance/UI-TARS-desktop</a></td>
+            <td>TypeScript</td>
+            <td class="num">38,507</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">7</td>
+            <td><a href="https://github.com/huggingface/diffusers" target="_blank" rel="noopener noreferrer">huggingface/diffusers</a></td>
+            <td>Python</td>
+            <td class="num">34,258</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">8</td>
+            <td><a href="https://github.com/openai/CLIP" target="_blank" rel="noopener noreferrer">openai/CLIP</a></td>
+            <td>Jupyter Notebook</td>
+            <td class="num">34,143</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">9</td>
+            <td><a href="https://github.com/lllyasviel/ControlNet" target="_blank" rel="noopener noreferrer">lllyasviel/ControlNet</a></td>
+            <td>Python</td>
+            <td class="num">34,048</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">10</td>
+            <td><a href="https://github.com/Stability-AI/generative-models" target="_blank" rel="noopener noreferrer">stability-ai/generative-models</a></td>
+            <td>Python</td>
+            <td class="num">27,245</td>
+            <td class="num">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>未分类 Top 10</h3>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">仓库</th>
+            <th scope="col">语言</th>
+            <th scope="col" class="num">总星标</th>
+            <th scope="col" class="num">本周新增</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rank">1</td>
+            <td><a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer">openclaw/openclaw</a></td>
+            <td>TypeScript</td>
+            <td class="num">385,517</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">2</td>
+            <td><a href="https://github.com/obra/superpowers" target="_blank" rel="noopener noreferrer">obra/superpowers</a></td>
+            <td>Shell</td>
+            <td class="num">268,888</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">3</td>
+            <td><a href="https://github.com/n8n-io/n8n" target="_blank" rel="noopener noreferrer">n8n-io/n8n</a></td>
+            <td>TypeScript</td>
+            <td class="num">199,771</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">4</td>
+            <td><a href="https://github.com/Snailclimb/JavaGuide" target="_blank" rel="noopener noreferrer">Snailclimb/JavaGuide</a></td>
+            <td>JavaScript</td>
+            <td class="num">157,612</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">5</td>
+            <td><a href="https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools" target="_blank" rel="noopener noreferrer">x1xhlol/system-prompts-and-models-of-ai-tools</a></td>
+            <td>—</td>
+            <td class="num">142,655</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">6</td>
+            <td><a href="https://github.com/github/spec-kit" target="_blank" rel="noopener noreferrer">github/spec-kit</a></td>
+            <td>Python</td>
+            <td class="num">125,809</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">7</td>
+            <td><a href="https://github.com/Comfy-Org/ComfyUI" target="_blank" rel="noopener noreferrer">Comfy-Org/ComfyUI</a></td>
+            <td>Python</td>
+            <td class="num">124,710</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">8</td>
+            <td><a href="https://github.com/microsoft/generative-ai-for-beginners" target="_blank" rel="noopener noreferrer">microsoft/generative-ai-for-beginners</a></td>
+            <td>Jupyter Notebook</td>
+            <td class="num">116,971</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">9</td>
+            <td><a href="https://github.com/google-gemini/gemini-cli" target="_blank" rel="noopener noreferrer">google-gemini/gemini-cli</a></td>
+            <td>TypeScript</td>
+            <td class="num">106,418</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td class="rank">10</td>
+            <td><a href="https://github.com/hacksider/Deep-Live-Cam" target="_blank" rel="noopener noreferrer">hacksider/Deep-Live-Cam</a></td>
+            <td>Python</td>
+            <td class="num">95,810</td>
+            <td class="num">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="trend" aria-labelledby="trend-title">
+    <h2 id="trend-title">近期趋势</h2>
+    <p class="section-note">近 1 周 star 变化趋势（按本周涨幅前 5 名）</p>
+    <figure class="chart-figure">
+      <svg viewBox="0 0 760 280" role="img" aria-label="近 1 周 star 变化趋势（按本周涨幅前 5 名）" xmlns="http://www.w3.org/2000/svg">
+        <title>近 1 周 star 变化趋势（按本周涨幅前 5 名）</title>
+        <line class="grid-line" x1="0" y1="216.00034455654495" x2="760" y2="216.00034455654495"/>
+        <text x="4" y="212.00034455654495">181,196</text>
+        <line class="grid-line" x1="0" y1="151.9998277217275" x2="760" y2="151.9998277217275"/>
+        <text x="4" y="147.9998277217275">255,495</text>
+        <line class="grid-line" x1="0" y1="88.00017227827246" x2="760" y2="88.00017227827246"/>
+        <text x="4" y="84.00017227827246">329,793</text>
+        <line class="grid-line" x1="0" y1="23.999655443455026" x2="760" y2="23.999655443455026"/>
+        <text x="4" y="19.999655443455026">404,092</text>
+        <text x="380.0" y="270" text-anchor="middle">08-08</text>
+        <circle cx="380.0" cy="40.0" r="3.5" fill="#22C55E">
+          <title>openclaw/openclaw · 385,517 星</title>
+        </circle>
+        <circle cx="380.0" cy="140.4632132051296" r="3.5" fill="#3B82F6">
+          <title>obra/superpowers · 268,888 星</title>
+        </circle>
+        <circle cx="380.0" cy="166.5211633090349" r="3.5" fill="#F59E0B">
+          <title>affaan-m/ECC · 238,637 星</title>
+        </circle>
+        <circle cx="380.0" cy="176.39356971347968" r="3.5" fill="#8B5CF6">
+          <title>NousResearch/hermes-agent · 227,176 星</title>
+        </circle>
+        <circle cx="380.0" cy="200.0" r="3.5" fill="#F43F5E">
+          <title>n8n-io/n8n · 199,771 星</title>
+        </circle>
+      </svg>
+      <figcaption class="chart-legend">
+        <span><span class="legend-swatch" style="background: #22C55E"></span>openclaw/openclaw · 385,517 星（+0）</span>
+        <span><span class="legend-swatch" style="background: #3B82F6"></span>obra/superpowers · 268,888 星（+0）</span>
+        <span><span class="legend-swatch" style="background: #F59E0B"></span>affaan-m/ECC · 238,637 星（+0）</span>
+        <span><span class="legend-swatch" style="background: #8B5CF6"></span>NousResearch/hermes-agent · 227,176 星（+0）</span>
+        <span><span class="legend-swatch" style="background: #F43F5E"></span>n8n-io/n8n · 199,771 星（+0）</span>
+      </figcaption>
+    </figure>
+    <details>
+      <summary>查看趋势数据表</summary>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">仓库</th>
+<th scope="col" class="num">08-08</th>            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>openclaw/openclaw</td>
+<td class="num">385,517</td>            </tr>
+            <tr>
+              <td>obra/superpowers</td>
+<td class="num">268,888</td>            </tr>
+            <tr>
+              <td>affaan-m/ECC</td>
+<td class="num">238,637</td>            </tr>
+            <tr>
+              <td>NousResearch/hermes-agent</td>
+<td class="num">227,176</td>            </tr>
+            <tr>
+              <td>n8n-io/n8n</td>
+<td class="num">199,771</td>            </tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+
+  <section id="commentary" aria-labelledby="commentary-title">
+    <h2 id="commentary-title">本周探讨</h2>
+    <ul>
+<li>本周有 656 个新上榜仓库，其中 openclaw/openclaw 以 385,517 星居首。</li><li>本期为首次运行，暂按总星标排序；下期起将展示周增量排名。</li>    </ul>
+    <p class="note">点评为基于数据规则自动生成的草稿，可在合并 PR 前人工润色补充。</p>
+  </section>
+
+  <section id="methodology" aria-labelledby="methodology-title">
+    <h2 id="methodology-title">数据与方法</h2>
+    <ul class="method-list">
+      <li>数据来源：GitHub REST API（Search API 按 topic 发现 + repos 端点抓取种子清单），每周生成一次快照。</li>
+      <li>榜单口径：总星标 ≥ 1000，排除 fork、已归档与模板仓库；周增量 = 本期快照 − 上期快照。</li>
+      <li>日均估算 = 周增量 ÷ 7（GitHub 未提供直接的周增量接口，超大仓库 stargazer 历史亦有 4 万条上限，因此日均列为估算值）。</li>
+      <li>分类：种子清单预设 + 仓库自身 topic 自动推断，未命中显示为「未分类」。</li>
+      <li>快照与历史报告均保存在仓库中，可回溯校验。</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  GitHub AI 周榜 · 数据截至 2026-08-08 · 生成脚本开源在项目仓库，欢迎在合并前修订点评
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = null;
+  try { saved = localStorage.getItem("gh-ai-theme"); } catch (e) {}
+  if (saved === "light" || saved === "dark") {
+    root.dataset.theme = saved;
+  }
+  var toggle = document.getElementById("theme-toggle");
+  toggle.addEventListener("click", function () {
+    var next = root.dataset.theme === "dark" ? "light" : "dark";
+    root.dataset.theme = next;
+    try { localStorage.setItem("gh-ai-theme", next); } catch (e) {}
+    toggle.setAttribute("aria-label", next === "dark" ? "切换到亮色主题" : "切换到暗色主题");
+  });
+})();
+</script>
+</body>
+</html>

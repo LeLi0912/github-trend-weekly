@@ -30,19 +30,43 @@ CATEGORY_LABELS = {
     "multimodal": "多模态与生成",
 }
 
-# topic 发现规则：每个分组的 topic 关键词用于 Search API，命中后按仓库自身 topics 归类
-TOPIC_QUERIES: dict[str, list[str]] = {
-    "llm": ["llm", "large-language-model", "llmops", "generative-ai"],
-    "ai": ["ai", "artificial-intelligence", "machine-learning", "deep-learning"],
-    "agent": ["ai-agent", "agents", "autonomous-agents", "agent-framework"],
-    "rag": ["rag", "retrieval-augmented-generation", "knowledge-graph"],
-    "vector": ["vector-database", "vector-search", "embeddings"],
-    "inference": ["llm-inference", "inference-engine", "model-serving"],
-    "multimodal": ["multimodal", "text-to-image", "diffusion-models", "speech-recognition"],
-    "eval": ["llm-evaluation", "prompt-evaluation", "ai-safety", "red-team"],
-    "training": ["fine-tuning", "llm-training", "distributed-training"],
-    "mlops": ["mlops", "llmops", "model-registry", "observability"],
-}
+# topic 发现规则：GitHub Search API 的 OR 只作用于文本词、不作用于 qualifier，
+# 因此每个 topic 单独查询一次再合并去重；每个 topic 取前 DISCOVER_TOP_N 个（按总星）。
+DISCOVER_TOP_N = 30
+TOPICS: list[str] = [
+    "llm",
+    "large-language-model",
+    "generative-ai",
+    "ai",
+    "artificial-intelligence",
+    "machine-learning",
+    "deep-learning",
+    "ai-agent",
+    "agents",
+    "autonomous-agents",
+    "agent-framework",
+    "rag",
+    "retrieval-augmented-generation",
+    "vector-database",
+    "vector-search",
+    "embeddings",
+    "llm-inference",
+    "inference-engine",
+    "model-serving",
+    "multimodal",
+    "text-to-image",
+    "diffusion-models",
+    "speech-recognition",
+    "llm-evaluation",
+    "prompt-evaluation",
+    "ai-safety",
+    "fine-tuning",
+    "llm-training",
+    "distributed-training",
+    "mlops",
+    "model-registry",
+    "observability",
+]
 
 # 由仓库自身 topics 推断分类（discovery 结果没有预设分类时使用）
 TOPIC_TO_CATEGORY: dict[str, str] = {

@@ -23,7 +23,6 @@
   {"owner": "browser-use", "repo": "browser-use", "category": "agent"},
   {"owner": "huggingface", "repo": "smolagents", "category": "agent"},
   {"owner": "google", "repo": "adk-python", "category": "agent"},
-  {"owner": "microsoft", "repo": "magentic-one", "category": "agent"},
   {"owner": "openai", "repo": "swarm", "category": "agent"},
   {"owner": "pydantic", "repo": "pydantic-ai", "category": "agent"},
   {"owner": "mem0ai", "repo": "mem0", "category": "agent"},
@@ -104,5 +103,5 @@
   {"owner": "facebookresearch", "repo": "ImageBind", "category": "multimodal"},
   {"owner": "NVIDIA", "repo": "NeMo", "category": "multimodal"},
   {"owner": "lllyasviel", "repo": "ControlNet", "category": "multimodal"},
-  {"owner": "stability-ai", "repo": "sd-scripts", "category": "multimodal"}
+  {"owner": "stability-ai", "repo": "generative-models", "category": "multimodal"}
 ]

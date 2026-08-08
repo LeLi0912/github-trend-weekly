@@ -1,5 +1,7 @@
+from github_ai_weekly.config import TOPICS
 from github_ai_weekly.snapshot import (
     build_snapshot,
+    discover_repos,
     load_snapshot,
     save_snapshot,
     validate_snapshot,
@@ -28,6 +30,24 @@ class FakeClient:
     @staticmethod
     def to_record(repo, category=None):
         return GitHubClient.to_record(repo, category)
+
+
+class RecordingClient(FakeClient):
+    def __init__(self):
+        super().__init__()
+        self.queries = []
+
+    def search_repos(self, query, per_page=100, max_results=100):
+        self.queries.append(query)
+        return [repo_item("discovery/rag-one", 5000) | {"topics": ["rag"]}]
+
+
+def test_discovery_uses_one_query_per_topic_without_or():
+    client = RecordingClient()
+    repos = discover_repos(client)
+    assert len(client.queries) == len(TOPICS)
+    assert all(" OR " not in q and q.startswith("topic:") and "stars:>1000" in q for q in client.queries)
+    assert "discovery/rag-one" in repos
 
 
 def test_build_snapshot_merges_seed_and_discovery():
