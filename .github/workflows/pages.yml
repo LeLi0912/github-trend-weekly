@@ -26,7 +26,11 @@ jobs:
       - name: 准备发布目录（仅 index.html 与 archive）
         run: |
           mkdir -p _site
-          cp index.html _site/
+          if [ -f index.html ]; then
+            cp index.html _site/
+          else
+            printf '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>GitHub AI 周榜</title><p>首期周报将在首次每周任务运行后生成。</p></html>' > _site/index.html
+          fi
           cp -r archive _site/ 2>/dev/null || true
 
       - uses: actions/configure-pages@v5
