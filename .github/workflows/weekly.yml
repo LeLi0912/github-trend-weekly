@@ -1,0 +1,60 @@
+name: Weekly AI Ranking
+
+on:
+  schedule:
+    # 每周一 00:30 UTC = 北京时间每周一 08:30
+    - cron: "30 0 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: weekly-report
+  cancel-in-progress: true
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 设置 uv 与 Python 环境
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.11"
+
+      - name: 安装项目依赖
+        run: |
+          uv venv .venv
+          uv pip install --python .venv/bin/python -e .
+
+      - name: 运行验收测试
+        run: .venv/bin/python -m pytest -q
+
+      - name: 计算报告日期（北京时间）
+        id: report-date
+        run: echo "report_date=$(TZ=Asia/Shanghai date +%F)" >> "$GITHUB_OUTPUT"
+
+      - name: 抓取本周快照
+        run: .venv/bin/python -m github_ai_weekly fetch --date "${{ steps.report-date.outputs.report_date }}"
+
+      - name: 生成周报（index.html + archive）
+        run: .venv/bin/python -m github_ai_weekly report
+
+      - name: 打开更新 PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "每周快照与周报：${{ steps.report-date.outputs.report_date }}"
+          branch: weekly/${{ steps.report-date.outputs.report_date }}
+          title: "GitHub AI 周榜 ${{ steps.report-date.outputs.report_date }}"
+          body: |
+            本周快照与周报已生成，请人工审核点评内容后合并。
+
+            - 快照：`data/snapshots/${{ steps.report-date.outputs.report_date }}.json`
+            - 周报：`index.html`（存档：`archive/${{ steps.report-date.outputs.report_date }}.html`）
+
+            合并后 GitHub Pages 会自动发布最新周报。
+          delete-branch: true
