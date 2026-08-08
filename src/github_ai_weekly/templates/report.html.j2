@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} · {{ date }}</title>
+<meta name="description" content="GitHub 上 AI 相关开源库的每周排名：周增量主榜、新面孔、分类子榜与趋势。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- 设计令牌（亮/暗两套，暗色为默认） ---------- */
+:root {
+  --bg: #FFFFFF;
+  --surface: #F8FAFC;
+  --surface-2: #F1F5F9;
+  --text: #0F172A;
+  --text-2: #475569;
+  --border: #CBD5E1;
+  --accent: #16A34A;
+  --accent-soft: rgba(22, 163, 74, 0.12);
+  --destructive: #DC2626;
+  --focus: #15803D;
+  --shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  color-scheme: light dark;
+}
+[data-theme="dark"] {
+  --bg: #0F172A;
+  --surface: #1E293B;
+  --surface-2: #272F42;
+  --text: #F8FAFC;
+  --text-2: #94A3B8;
+  --border: #475569;
+  --accent: #22C55E;
+  --accent-soft: rgba(34, 197, 94, 0.14);
+  --destructive: #EF4444;
+  --focus: #4ADE80;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Fira Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.mono, .num, code, .rank {
+  font-family: "Fira Code", "SFMono-Regular", Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--surface);
+  color: var(--text);
+  padding: 8px 16px;
+  z-index: 100;
+  border-radius: 0 0 8px 0;
+}
+.skip-link:focus { left: 0; }
+
+/* ---------- 头部 ---------- */
+.site-header {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand svg { flex: none; color: var(--text); }
+.brand h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+.subtitle {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.theme-toggle {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease;
+}
+.theme-toggle:hover { border-color: var(--accent); }
+[data-theme="dark"] .icon-sun { display: block; }
+[data-theme="dark"] .icon-moon { display: none; }
+.icon-sun { display: none; }
+.icon-moon { display: block; }
+
+/* ---------- 布局 ---------- */
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+section { margin-top: 40px; }
+h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  border-left: 4px solid var(--accent);
+  padding-left: 10px;
+}
+h3 { font-size: 17px; font-weight: 600; margin: 28px 0 10px; }
+.section-note { margin: 0 0 16px; color: var(--text-2); font-size: 14px; }
+
+/* ---------- 摘要卡片 ---------- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 24px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+.stat-value {
+  font-family: "Fira Code", monospace;
+  font-size: 26px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+.stat-label { font-size: 13px; color: var(--text-2); margin-top: 2px; }
+
+/* ---------- 表格 ---------- */
+.table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  min-width: 760px;
+}
+th, td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+th {
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--text-2);
+  background: var(--surface-2);
+  position: sticky;
+  top: 73px;
+  z-index: 1;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--surface-2); }
+td.num { text-align: right; white-space: nowrap; }
+th.num { text-align: right; }
+.rank { color: var(--text-2); font-weight: 600; }
+.repo-desc {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--text-2);
+  max-width: 420px;
+}
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.gain { min-width: 120px; }
+.gain-value { font-weight: 600; color: var(--accent); }
+.bar {
+  display: block;
+  height: 6px;
+  margin-top: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+  min-width: 2px;
+}
+.is-new .tag { color: var(--accent); border-color: var(--accent); }
+
+/* ---------- 趋势图 ---------- */
+.chart-figure { margin: 0; }
+.chart-figure svg {
+  width: 100%;
+  height: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.chart-figure text { fill: var(--text-2); font-size: 12px; }
+.grid-line { stroke: var(--border); stroke-width: 1; }
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.legend-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-right: 6px;
+}
+details {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 12px 16px;
+}
+summary { cursor: pointer; font-size: 14px; }
+
+/* ---------- 点评与方法 ---------- */
+#commentary ul { padding-left: 22px; }
+#commentary li { margin: 6px 0; }
+.note { color: var(--text-2); font-size: 13px; }
+.method-list { padding-left: 22px; color: var(--text-2); font-size: 14px; }
+.method-list li { margin: 6px 0; }
+
+footer {
+  border-top: 1px solid var(--border);
+  padding: 20px;
+  text-align: center;
+  color: var(--text-2);
+  font-size: 13px;
+}
+
+/* ---------- 响应式 ---------- */
+@media (min-width: 768px) {
+  .stats-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 767px) {
+  .brand h1 { font-size: 17px; }
+  main { padding: 16px 14px 40px; }
+  th { top: 61px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到主要内容</a>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/>
+      </svg>
+      <div>
+        <h1>{{ title }}</h1>
+        <p class="subtitle">数据截至 {{ date }}{% if previous_date %} · 对比 {{ previous_date }}{% endif %} · 每周更新 · 快照差值口径</p>
+      </div>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换亮色 / 暗色主题" title="切换主题">
+      <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+      </svg>
+      <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+  <section class="stats-grid" aria-label="本周摘要">
+    {% for card in stats_cards %}
+    <div class="stat-card">
+      <div class="stat-value">{{ card.value }}</div>
+      <div class="stat-label">{{ card.label }}</div>
+    </div>
+    {% endfor %}
+  </section>
+
+  <section id="main-ranking" aria-labelledby="main-ranking-title">
+    <h2 id="main-ranking-title">本周主榜 Top {{ main|length }}</h2>
+    <p class="section-note">{{ main_note }}</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">仓库</th>
+            <th scope="col">分类</th>
+            <th scope="col">语言</th>
+            <th scope="col" class="num">总星标</th>
+            <th scope="col" class="num">本周新增</th>
+            <th scope="col" class="num">日均估算</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in main %}
+          <tr{% if item.is_new %} class="is-new"{% endif %}>
+            <td class="rank">{{ item.rank }}</td>
+            <td>
+              <a href="{{ item.record.url }}" target="_blank" rel="noopener noreferrer">{{ item.full_name }}</a>
+              {% if item.record.description %}<div class="repo-desc">{{ item.record.description }}</div>{% endif %}
+            </td>
+            <td><span class="tag">{{ item.category_label }}</span></td>
+            <td>{{ item.record.language or "—" }}</td>
+            <td class="num">{{ item.stars_fmt }}</td>
+            <td class="num gain">
+              {% if item.weekly_gain is not none %}
+              <span class="gain-value">+{{ item.gain_fmt }}</span>
+              <span class="bar" style="width: {{ item.bar_pct }}%" aria-hidden="true"></span>
+              {% else %}—{% endif %}
+            </td>
+            <td class="num">{% if item.daily_est is not none %}+{{ item.daily_fmt }}{% else %}—{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {% if new_faces %}
+  <section id="new-faces" aria-labelledby="new-faces-title">
+    <h2 id="new-faces-title">新面孔（本周新上榜）</h2>
+    <p class="section-note">上一期未进入榜单、本期首次上榜的仓库，按总星标排序。</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">仓库</th>
+            <th scope="col">分类</th>
+            <th scope="col">语言</th>
+            <th scope="col" class="num">总星标</th>
+            <th scope="col" class="num">本周新增</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in new_faces %}
+          <tr>
+            <td class="rank">{{ item.rank }}</td>
+            <td>
+              <a href="{{ item.record.url }}" target="_blank" rel="noopener noreferrer">{{ item.full_name }}</a>
+              {% if item.record.description %}<div class="repo-desc">{{ item.record.description }}</div>{% endif %}
+            </td>
+            <td><span class="tag">{{ item.category_label }}</span></td>
+            <td>{{ item.record.language or "—" }}</td>
+            <td class="num">{{ item.stars_fmt }}</td>
+            <td class="num gain">
+              {% if item.weekly_gain is not none %}
+              <span class="gain-value">+{{ item.gain_fmt }}</span>
+              <span class="bar" style="width: {{ item.bar_pct }}%" aria-hidden="true"></span>
+              {% else %}—{% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if categories %}
+  <section id="categories" aria-labelledby="categories-title">
+    <h2 id="categories-title">分类子榜</h2>
+    {% for label, items in categories %}
+    <h3>{{ label }} Top {{ items|length }}</h3>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">仓库</th>
+            <th scope="col">语言</th>
+            <th scope="col" class="num">总星标</th>
+            <th scope="col" class="num">本周新增</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td class="rank">{{ item.rank }}</td>
+            <td><a href="{{ item.record.url }}" target="_blank" rel="noopener noreferrer">{{ item.full_name }}</a></td>
+            <td>{{ item.record.language or "—" }}</td>
+            <td class="num">{{ item.stars_fmt }}</td>
+            <td class="num">{% if item.weekly_gain is not none %}+{{ item.gain_fmt }}{% else %}—{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if trend %}
+  <section id="trend" aria-labelledby="trend-title">
+    <h2 id="trend-title">近期趋势</h2>
+    <p class="section-note">{{ trend.summary }}</p>
+    <figure class="chart-figure">
+      <svg viewBox="0 0 {{ trend.width }} {{ trend.total_height }}" role="img" aria-label="{{ trend.summary }}" xmlns="http://www.w3.org/2000/svg">
+        <title>{{ trend.summary }}</title>
+        {% for tick in trend.y_ticks %}
+        <line class="grid-line" x1="0" y1="{{ tick.y }}" x2="{{ trend.width }}" y2="{{ tick.y }}"/>
+        <text x="4" y="{{ tick.y - 4 }}">{{ tick.value }}</text>
+        {% endfor %}
+        {% for d in trend.dates %}
+        <text x="{{ d.x }}" y="{{ trend.total_height - 10 }}" text-anchor="middle">{{ d.label }}</text>
+        {% endfor %}
+        {% for s in trend.series %}
+        {% if s.line %}<path d="{{ s.line }}" fill="none" stroke="{{ s.color }}" stroke-width="2.5" stroke-dasharray="{{ s.dash }}" stroke-linecap="round" stroke-linejoin="round"/>{% endif %}
+        {% for dot in s.dots %}
+        <circle cx="{{ dot.cx }}" cy="{{ dot.cy }}" r="3.5" fill="{{ s.color }}">
+          <title>{{ s.name }} · {{ dot.stars|fmt }} 星</title>
+        </circle>
+        {% endfor %}
+        {% endfor %}
+      </svg>
+      <figcaption class="chart-legend">
+        {% for s in trend.series %}
+        <span><span class="legend-swatch" style="background: {{ s.color }}"></span>{{ s.name }} · {{ s.latest|fmt }} 星（{{ "%+d"|format(s.delta) }}）</span>
+        {% endfor %}
+      </figcaption>
+    </figure>
+    <details>
+      <summary>查看趋势数据表</summary>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">仓库</th>
+              {% for d in trend.table.dates %}<th scope="col" class="num">{{ d[5:] }}</th>{% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in trend.table.rows %}
+            <tr>
+              <td>{{ row.name }}</td>
+              {% for value in row.points %}<td class="num">{{ value|fmt }}</td>{% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+  {% endif %}
+
+  <section id="commentary" aria-labelledby="commentary-title">
+    <h2 id="commentary-title">本周探讨</h2>
+    {% if commentary %}
+    <ul>
+      {% for item in commentary %}<li>{{ item }}</li>{% endfor %}
+    </ul>
+    {% else %}
+    <p class="note">暂无自动点评。</p>
+    {% endif %}
+    <p class="note">点评为基于数据规则自动生成的草稿，可在合并 PR 前人工润色补充。</p>
+  </section>
+
+  <section id="methodology" aria-labelledby="methodology-title">
+    <h2 id="methodology-title">数据与方法</h2>
+    <ul class="method-list">
+      <li>数据来源：GitHub REST API（Search API 按 topic 发现 + repos 端点抓取种子清单），每周生成一次快照。</li>
+      <li>榜单口径：总星标 ≥ 1000，排除 fork、已归档与模板仓库；周增量 = 本期快照 − 上期快照。</li>
+      <li>日均估算 = 周增量 ÷ 7（GitHub 未提供直接的周增量接口，超大仓库 stargazer 历史亦有 4 万条上限，因此日均列为估算值）。</li>
+      <li>分类：种子清单预设 + 仓库自身 topic 自动推断，未命中显示为「未分类」。</li>
+      <li>快照与历史报告均保存在仓库中，可回溯校验。</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  {{ title }} · 数据截至 {{ date }} · 生成脚本开源在项目仓库，欢迎在合并前修订点评
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = null;
+  try { saved = localStorage.getItem("gh-ai-theme"); } catch (e) {}
+  if (saved === "light" || saved === "dark") {
+    root.dataset.theme = saved;
+  }
+  var toggle = document.getElementById("theme-toggle");
+  toggle.addEventListener("click", function () {
+    var next = root.dataset.theme === "dark" ? "light" : "dark";
+    root.dataset.theme = next;
+    try { localStorage.setItem("gh-ai-theme", next); } catch (e) {}
+    toggle.setAttribute("aria-label", next === "dark" ? "切换到亮色主题" : "切换到暗色主题");
+  });
+})();
+</script>
+</body>
+</html>
