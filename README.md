@@ -54,6 +54,10 @@ tests/                          pytest 验收测试
 .github/workflows/              每周 PR 与 Pages 部署
 ```
 
+## 开发文档
+
+面向后续更新迭代的完整手册（架构、数据流、模块、配置、扩展指南、踩坑记录）见 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)。
+
 ## 榜单口径
 
 - 总星标 ≥ 1000，排除 fork、已归档与模板仓库。
