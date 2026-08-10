@@ -27,8 +27,8 @@ jobs:
 
       - name: 安装项目依赖
         run: |
-          uv venv .venv
-          uv pip install --python .venv/bin/python -e .
+          uv venv --clear .venv
+          uv pip install --python .venv/bin/python -e ".[dev]"
 
       - name: 运行验收测试
         run: .venv/bin/python -m pytest -q
