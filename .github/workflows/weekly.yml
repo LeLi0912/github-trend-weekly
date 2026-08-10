@@ -39,6 +39,8 @@ jobs:
 
       - name: 抓取本周快照
         run: .venv/bin/python -m github_ai_weekly fetch --date "${{ steps.report-date.outputs.report_date }}"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: 生成周报（index.html + archive）
         run: .venv/bin/python -m github_ai_weekly report

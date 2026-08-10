@@ -51,12 +51,10 @@ TOPICS: list[str] = [
     "vector-search",
     "embeddings",
     "llm-inference",
-    "inference-engine",
     "model-serving",
     "multimodal",
     "text-to-image",
     "diffusion-models",
-    "speech-recognition",
     "llm-evaluation",
     "prompt-evaluation",
     "ai-safety",
@@ -64,8 +62,6 @@ TOPICS: list[str] = [
     "llm-training",
     "distributed-training",
     "mlops",
-    "model-registry",
-    "observability",
 ]
 
 # 由仓库自身 topics 推断分类（discovery 结果没有预设分类时使用）

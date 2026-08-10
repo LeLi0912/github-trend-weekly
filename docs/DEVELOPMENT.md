@@ -94,7 +94,7 @@ flowchart LR
 | `TOP_N` | 30 | 主榜长度 |
 | `CATEGORY_TOP_N` | 10 | 每个分类子榜长度 |
 | `DISCOVER_TOP_N` | 30 | 每个 topic 发现取前 N（按总星） |
-| `TOPICS` | 32 个 topic | topic 发现词列表，逐个查询 |
+| `TOPICS` | 28 个 topic | topic 发现词列表，逐个查询（登录态 Search API 每分钟 30 次，留余量防限流） |
 | `TOPIC_TO_CATEGORY` | — | 由仓库自身 topics 推断分类的映射 |
 | `CATEGORY_LABELS` | 9 类 | 分类 key → 中文展示名 |
 
